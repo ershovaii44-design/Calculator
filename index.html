@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Калькулятор финансовых услуг</title>
+  <style>
+    :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #162c26; background: #f1f5f0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { width: min(100% - 32px, 910px); margin: clamp(24px, 7vw, 88px) auto; }
+    h1 { font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.08; letter-spacing: -.045em; margin: 0 0 14px; }
+    .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(16px, 4vw, 42px); align-items: center; margin-bottom: 26px; }
+    .hero p { margin: 0; color: #40564c; max-width: 34ch; }
+    .hero img, .desk-photo { width: 100%; display: block; object-fit: cover; border-radius: 22px; }
+    .hero img { aspect-ratio: 4 / 3; }
+    .desk-photo { margin-top: 18px; aspect-ratio: 4 / 1; object-position: center 48%; }
+    form { background: white; border: 1px solid #d7e1d8; border-radius: 22px; padding: clamp(14px, 3vw, 28px); }
+    .service { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, .85fr) minmax(0, .9fr); gap: 14px; border-bottom: 1px solid #d7e1d8; padding: 18px 0; align-items: start; }
+    .service:first-child { padding-top: 0; }
+    .choice { display: flex; align-items: start; gap: 9px; font-weight: 650; cursor: pointer; }
+    input[type="checkbox"] { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: #12624e; }
+    .source { display: inline-block; margin-left: 29px; font-size: .84rem; color: #285e50; }
+    .field label, .subtotal-label { display: block; font-size: .8rem; color: #40564c; margin-bottom: 4px; }
+    input[type="text"] { width: 100%; border: 1px solid #91a89b; border-radius: 8px; padding: 8px; font: inherit; color: inherit; }
+    input:disabled { background: #f4f6f4; color: #52685c; }
+    input[aria-invalid="true"] { border-color: #a52130; }
+    :focus-visible { outline: 3px solid #1c8068; outline-offset: 3px; }
+    .error { display: block; color: #a52130; font-size: .8rem; }
+    .subtotal output { font-weight: 650; overflow-wrap: anywhere; }
+    .summary { background: #143e32; color: #fff; border-radius: 14px; padding: 16px 20px; margin: 22px 0 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
+    #total { font-weight: 700; overflow-wrap: anywhere; }
+    .note { color: #40564c; font-size: .88rem; margin: 0 0 16px; }
+    button { background: white; color: #143e32; border: 1px solid #91a89b; border-radius: 8px; padding: 8px 14px; font: inherit; cursor: pointer; }
+    button:hover { background: #edf5ef; }
+    @media (max-width: 650px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero img { aspect-ratio: 16 / 9; }
+      .desk-photo { aspect-ratio: 2.5 / 1; }
+      .service { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .details, .subtotal { grid-column: 1 / -1; }
+      .subtotal { display: flex; gap: 8px; align-items: baseline; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <div>
+        <h1>Калькулятор финансовых услуг</h1>
+        <p>Отметьте услуги и укажите объём. Цену за единицу можно изменить для текущего расчёта.</p>
+      </div>
+      <img src="financial-consultation.webp" alt="">
+    </header>
+    <noscript><p>Для расчёта включите JavaScript в браузере.</p></noscript>
+    <form id="calculator">
+      <div id="services" role="group" aria-label="Финансовые услуги"></div>
+      <div class="summary">
+        <span>Ориентировочная стоимость</span>
+        <output id="total" aria-live="polite">Выберите услуги</output>
+      </div>
+      <p class="note">Начальные тарифы взяты из открытых прайсов. Изменения действуют до закрытия или обновления страницы.</p>
+      <button type="reset">Сбросить</button>
+    </form>
+    <img class="desk-photo" src="financial-planning.webp" alt="" loading="lazy">
+  </main>
+  <template id="service-template">
+    <div class="service" role="group">
+      <div class="details">
+        <label class="choice"><input type="checkbox"><span></span></label>
+        <a class="source" target="_blank" rel="noopener noreferrer"></a>
+      </div>
+      <div class="field price">
+        <label></label>
+        <input type="text" inputmode="decimal" autocomplete="off" disabled>
+        <small class="error"></small>
+      </div>
+      <div class="field quantity">
+        <label></label>
+        <input type="text" inputmode="numeric" autocomplete="off" disabled>
+        <small class="error"></small>
+      </div>
+      <div class="subtotal"><span class="subtotal-label">Сумма</span><output>—</output></div>
+    </div>
+  </template>
+  <script>
+    const orion = { name: 'ОрионКонсалт', url: 'https://orion-consult.ru/prices/' };
+    const catalog = [
+      {
+        name: 'Консультация по финансовому моделированию', price: 5000, unit: 'часы',
+        source: {
+          name: 'Консалт Плюс',
+          url: 'https://konsalt-p.ru/pages/specializirovannye-uslugi/analitika-i-konsalting/finansovoe-modelirovanie.html',
+        },
+      },
+      { name: 'Финансовый анализ бизнеса', price: 30000, unit: 'компании', source: orion },
+      { name: 'Бюджетирование и план-фактный анализ', price: 40000, unit: 'бюджеты', source: orion },
+      { name: 'Внешний финансовый директор', price: 80000, unit: 'месяцы', source: orion },
+    ];
+
+    const calculator = document.querySelector('#calculator');
+    const services = document.querySelector('#services');
+    const template = document.querySelector('#service-template');
+    const total = document.querySelector('#total');
+    const integerFormat = new Intl.NumberFormat('ru-RU');
+
+    function formatMoney(kopecks) {
+      const remainder = kopecks % 100n;
+      const decimal = remainder ? ',' + remainder.toString().padStart(2, '0') : '';
+      return 'от ' + integerFormat.format(kopecks / 100n) + decimal + '\u00a0₽';
+    }
+
+    function readPrice(value) {
+      const match = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(value.trim());
+      if (!match) return null;
+      return BigInt(match[1]) * 100n + BigInt((match[2] ?? '').padEnd(2, '0'));
+    }
+
+    function readQuantity(value) {
+      const cleaned = value.trim();
+      if (!/^\d+$/.test(cleaned)) return null;
+      const quantity = BigInt(cleaned);
+      return quantity > 0n ? quantity : null;
+    }
+
+    function setupField(row, kind, id, caption, initialValue) {
+      const field = row.querySelector('.' + kind);
+      const label = field.querySelector('label');
+      const input = field.querySelector('input');
+      const error = field.querySelector('.error');
+      input.id = id + '-' + kind;
+      input.defaultValue = initialValue;
+      label.htmlFor = input.id;
+      label.textContent = caption;
+      error.id = input.id + '-error';
+      input.setAttribute('aria-describedby', error.id);
+      return { input, error };
+    }
+
+    const rows = catalog.map((service, index) => {
+      const row = template.content.firstElementChild.cloneNode(true);
+      const id = 'service-' + index;
+      const name = row.querySelector('.choice span');
+      name.id = id;
+      name.textContent = service.name;
+      row.setAttribute('aria-labelledby', id);
+      const choice = row.querySelector('input[type="checkbox"]');
+      const source = row.querySelector('.source');
+      source.href = service.source.url;
+      source.textContent = service.source.name + ' · прайс';
+      const price = setupField(row, 'price', id, 'Цена за ед., ₽', String(service.price));
+      const quantity = setupField(row, 'quantity', id, 'Объём · ' + service.unit, '1');
+      const subtotal = row.querySelector('output');
+      subtotal.htmlFor.value = [price.input.id, quantity.input.id].join(' ');
+      services.append(row);
+      return { choice, price, quantity, subtotal };
+    });
+
+    function showError(field, message) {
+      field.error.textContent = message;
+      if (message) field.input.setAttribute('aria-invalid', 'true');
+      else field.input.removeAttribute('aria-invalid');
+    }
+
+    function update() {
+      let selected = 0;
+      let invalid = false;
+      let sum = 0n;
+
+      for (const row of rows) {
+        const enabled = row.choice.checked;
+        row.price.input.disabled = !enabled;
+        row.quantity.input.disabled = !enabled;
+        const price = enabled ? readPrice(row.price.input.value) : null;
+        const quantity = enabled ? readQuantity(row.quantity.input.value) : null;
+        showError(row.price, enabled && price === null ? 'Введите цену от 0 с точностью до копеек.' : '');
+        showError(row.quantity, enabled && quantity === null ? 'Введите целое число от 1.' : '');
+
+        row.subtotal.value = '—';
+        if (!enabled) continue;
+        selected += 1;
+        if (price === null || quantity === null) {
+          invalid = true;
+          continue;
+        }
+        const subtotal = price * quantity;
+        row.subtotal.value = formatMoney(subtotal);
+        sum += subtotal;
+      }
+
+      if (invalid) total.value = 'Исправьте поля с ошибками';
+      else if (selected === 0) total.value = 'Выберите услуги';
+      else total.value = formatMoney(sum);
+    }
+
+    calculator.addEventListener('input', update);
+    calculator.addEventListener('submit', (event) => event.preventDefault());
+    calculator.addEventListener('reset', () => setTimeout(update, 0));
+    update();
+  </script>
+</body>
+</html>
