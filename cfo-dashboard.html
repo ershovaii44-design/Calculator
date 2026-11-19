@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Стоимость услуг финансового директора</title>
+<style>
+  :root{font:16px/1.5 system-ui,sans-serif;color:#152e28;background:#f2f4ef;--ink:#153931;--muted:#4e6259;--line:#dbe4dc;--accent:#c9e784}
+  *{box-sizing:border-box}
+  body{margin:0}
+  main{max-width:1190px;margin:auto;padding:24px clamp(14px,4vw,48px) 48px}
+  h1,h2,h3,p{margin:0}
+  h1{font-size:clamp(2.4rem,5.7vw,5rem);line-height:.99;letter-spacing:-.062em;font-weight:650}
+  h2{font-size:1.3rem;line-height:1.2}
+  h3{font-size:1rem}
+  .hero{display:grid;grid-template-columns:1.13fr 1fr;background:var(--ink);color:#fff;border-radius:24px;overflow:hidden}
+  .hero div{padding:clamp(24px,5vw,57px);align-self:center}
+  .hero p{margin-top:19px;color:#e2efdc;max-width:38ch}
+  .hero img{width:100%;height:100%;min-height:280px;max-height:425px;object-fit:cover}
+  nav,.actions{display:flex;flex-wrap:wrap;gap:9px}
+  nav{margin:22px 0 18px}
+  button,input,select,textarea{font:inherit}
+  button{border:1px solid var(--line);background:#fff;border-radius:9px;color:var(--ink);font-weight:650;padding:9px 13px;cursor:pointer}
+  button:hover{background:#e9f2e5}
+  button[aria-pressed=true]{background:var(--ink);color:white}
+  button:disabled{cursor:default;opacity:.55}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#19341d}
+  :focus-visible{outline:3px solid #318164;outline-offset:3px}
+  .layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,1fr);gap:16px;align-items:start}
+  .stack{display:grid;gap:16px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:clamp(14px,2.5vw,23px)}
+  .card h2,.card h3{margin-bottom:12px}
+  .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+  label{display:grid;gap:4px;font-size:.88rem;color:var(--muted)}
+  input,select,textarea{width:100%;min-width:0;padding:8px;border:1px solid #a8b8ad;border-radius:7px;background:white;color:#152e28}
+  textarea{resize:vertical;min-height:75px}
+  .wide{grid-column:1/-1}
+  .hint,small{color:var(--muted);font-size:.82rem}
+  small{display:block}
+  .work{display:grid;grid-template-columns:minmax(0,1fr) minmax(85px,112px);gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+  .work:last-child{border:0}
+  .results{position:sticky;top:12px}
+  .headline{background:var(--ink);color:white;padding:17px;border-radius:12px;margin-bottom:12px}
+  .headline output{display:block;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:750;overflow-wrap:anywhere}
+  .metrics{margin:0 0 14px}
+  .metrics div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:7px 0}
+  dd{margin:0;text-align:right;font-weight:650;overflow-wrap:anywhere}
+  .error{color:#9c2532;margin:8px 0}
+  details summary{cursor:pointer;font-weight:650}
+  details .fields{margin-top:12px}
+  .photo{width:100%;height:145px;object-fit:cover;border-radius:12px;margin-top:17px;display:block}
+  .meter{height:10px;width:100%;background:#e5eee5;border-radius:12px;overflow:hidden;margin:8px 0}
+  .meter span{display:block;height:100%;background:#588440}
+  .meter[data-over=true] span{background:#a4383b}
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;text-align:left}
+  th,td{padding:9px;border-bottom:1px solid var(--line);vertical-align:top}
+  .journal{min-width:780px}
+  .journal input{min-width:73px}
+  .journal input[type=text]{min-width:130px}
+  .journal-summary{margin:12px 0}
+  #offer{max-width:850px;margin:20px auto;background:#fff;padding:clamp(16px,4vw,46px);border-radius:17px}
+  #offer h2{font-size:clamp(1.7rem,4vw,2.65rem);margin-bottom:12px}
+  #offer .actions{margin-bottom:18px}
+  .offer-meta{white-space:pre-line;margin:12px 0;overflow-wrap:anywhere}
+  .offer-total{font-weight:750;font-size:1.35rem;margin:15px 0}
+  #offer-table th:last-child,#offer-table td:last-child{text-align:right}
+  [hidden]{display:none!important}
+  @media(max-width:760px){.hero,.layout{grid-template-columns:1fr}.hero img{height:200px;min-height:0}.results{position:static}}
+  @media(max-width:380px){.fields{grid-template-columns:1fr}}
+  @page{size:A4;margin:16mm}
+  @media print{
+    :root,body{background:white;color:#152e28;font-size:11pt}
+    main{padding:0;max-width:none}
+    main>*:not(#offer),#offer .actions{display:none!important}
+    #offer:not([hidden]){padding:0;margin:0;max-width:none;border-radius:0}
+    #offer h2{font-size:24pt}
+    #offer-table tr,.offer-total{break-inside:avoid}
+    #offer-table thead{display:table-header-group}
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <div><h1>Финансовый директор на аутсорсе</h1><p>Рассчитайте стоимость проекта или сопровождения и подготовьте коммерческое предложение для клиента.</p></div>
+    <img src="financial-consultation.webp" alt="">
+  </header>
+  <nav aria-label="Разделы дашборда">
+    <button type="button" data-view="quote" aria-pressed="true">Расчёт и предложение</button>
+    <button type="button" data-view="capacity" aria-pressed="false">Безубыточность</button>
+    <button type="button" data-view="journal" aria-pressed="false">Журнал работ</button>
+  </nav>
+  <section id="quote" class="layout" aria-label="Расчёт и предложение">
+    <form id="quote-form" class="stack">
+      <section class="card">
+        <h2>Клиент и условия</h2>
+        <div class="fields">
+          <label>Компания<input id="client" maxlength="160" placeholder="Например, ООО «Маяк»"></label>
+          <label>Формат<select id="mode"><option value="project">Разовый проект</option><option value="monthly">Абонемент CFO</option></select></label>
+          <label>Отрасль<select id="industry"><option>Производство</option><option selected>Торговля</option><option>Услуги</option><option>Стройка</option></select></label>
+          <label>Срочность<select id="urgency"><option>Стандарт</option><option selected>Срочно</option><option>Аварийно</option></select></label>
+          <label>Состояние учёта<select id="condition"><option value="1">1 · Налажен</option><option value="2">2 · Незначительные пробелы</option><option selected value="3">3 · Требует доработки</option><option value="4">4 · Существенные пробелы</option><option value="5">5 · Нужно восстановление</option></select></label>
+          <label>Выручка в месяц, ₽<input type="number" min="0" step="0.01" placeholder="Справочно"></label>
+          <label>Юридические лица<input type="number" min="0" step="1" placeholder="Справочно"></label>
+          <label>Сотрудники<input type="number" min="0" step="1" placeholder="Справочно"></label>
+          <label>Системы учёта<input type="number" min="0" step="1" placeholder="Справочно"></label>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Работы и трудозатраты</h2>
+        <p class="hint" id="hours-note"></p>
+        <div id="services"></div>
+      </section>
+      <section class="card">
+        <details>
+          <summary>Ставки, коэффициенты и расходы</summary>
+          <p class="hint">Стартовые настройки демонстрационные. Замените их своими данными.</p>
+          <div class="fields" id="quote-costs"></div>
+          <details class="wide"><summary>Справочник коэффициентов</summary><div class="fields" id="factors"></div></details>
+        </details>
+      </section>
+      <section class="card">
+        <h2>Реквизиты предложения</h2>
+        <div class="fields">
+          <label>Исполнитель<input id="provider" maxlength="160" placeholder="Имя или компания"></label>
+          <label>Контакты исполнителя<input id="contact" maxlength="180" placeholder="Email или телефон"></label>
+          <label>Дата предложения<input id="offer-date" type="date"></label>
+          <label>Действует до<input id="valid-date" type="date"></label>
+          <label class="wide">Сроки, оплата и другие условия<textarea id="terms" maxlength="1500" placeholder="Например, сроки начала работ и порядок оплаты"></textarea></label>
+        </div>
+      </section>
+    </form>
+    <aside class="card results">
+      <h2>Итог по клиенту</h2>
+      <div class="headline"><span id="price-caption">Цена проекта</span><output id="price" aria-live="polite">—</output></div>
+      <dl class="metrics" id="quote-metrics"></dl>
+      <p class="error" id="quote-message" role="status"></p>
+      <button type="button" class="primary" id="make-offer">Подготовить предложение</button>
+      <img class="photo" src="financial-planning.webp" alt="">
+    </aside>
+  </section>
+  <section id="capacity" class="layout" aria-label="Безубыточность" hidden>
+    <form id="capacity-form" class="card">
+      <h2>Экономика абонементов</h2>
+      <div class="fields" id="capacity-inputs"></div>
+    </form>
+    <section class="card">
+      <h2>Загрузка и прибыль</h2>
+      <div class="meter" id="capacity-meter" aria-hidden="true"><span></span></div>
+      <p class="error" id="capacity-message" role="status"></p>
+      <dl class="metrics" id="capacity-metrics"></dl>
+    </section>
+  </section>
+  <section id="journal" class="card" aria-label="Журнал работ" hidden>
+    <h2>План и факт по работам</h2>
+    <p class="hint">Чтобы сохранить журнал между сеансами, выгрузите его в CSV.</p>
+    <div class="actions">
+      <button type="button" id="add-entry">Добавить строку</button>
+      <button type="button" id="export-journal">Выгрузить CSV</button>
+    </div>
+    <p class="journal-summary" id="journal-summary"></p>
+    <div class="scroll"><table class="journal"><thead><tr><th>Клиент</th><th>Услуга</th><th>План, ч</th><th>Факт, ч</th><th>Ставка, ₽/ч</th><th>План, ₽</th><th>Факт, ₽</th><th>Контроль</th><th>Действие</th></tr></thead><tbody id="journal-rows"></tbody></table></div>
+  </section>
+  <article id="offer" aria-labelledby="offer-title" hidden>
+    <div class="actions"><button type="button" id="close-offer">К расчёту</button><button type="button" class="primary" id="print-offer">Сохранить PDF / распечатать</button></div>
+    <h2 id="offer-title" tabindex="-1">Коммерческое предложение</h2>
+    <p id="offer-mode"></p>
+    <p class="offer-meta" id="offer-meta"></p>
+    <table id="offer-table"><thead><tr><th>Услуга</th><th>Результат</th><th>Часы работ</th></tr></thead><tbody></tbody></table>
+    <p class="offer-total" id="offer-total"></p>
+    <p class="hint" id="offer-hours"></p>
+    <p class="offer-meta" id="offer-terms"></p>
+  </article>
+</main>
+<script>
+  const byId = id => document.getElementById(id);
+  const numberFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 });
+  const currency = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const fmt = value => Number.isFinite(value) ? numberFormat.format(value) : '—';
+  const money = value => Number.isFinite(value) ? currency.format(value) : '—';
+  const value = id => byId(id).value;
+  const num = id => byId(id).valueAsNumber;
+  const percent = id => num(id) / 100;
+  const ceilMoney = amount => Math.ceil(Number((amount * 100).toPrecision(14))) / 100;
+  const services = [
+    ['Диагностика учёта', 8, 20, 12, 'Карта проблем и план исправлений'],
+    ['Постановка управленческого учёта', 24, 70, 28, 'Регламенты, шаблоны ОПиУ, ДДС и баланса'],
+    ['Финансовое моделирование', 16, 45, 0, 'Финансовая модель с допущениями и сценариями'],
+    ['Бюджетирование', 12, 36, 0, 'Бюджеты и шаблон план-фактного анализа'],
+    ['Подготовка к кредитам и проверкам', 10, 32, 0, 'Пакет материалов и перечень рисков'],
+    ['Обучение команды', 4, 16, 0, 'Занятия и инструкции для команды'],
+    ['Абонемент CFO', 8, 40, 12, 'Регулярные встречи, отчёты и контроль план-факта']
+  ];
+  const factorGroups = [
+    ['industry', [['Производство', 1.25], ['Торговля', 1.1], ['Услуги', 1], ['Стройка', 1.3]]],
+    ['urgency', [['Стандарт', 1], ['Срочно', 1.25], ['Аварийно', 1.5]]],
+    ['condition', [[1, 1], [2, 1.1], [3, 1.2], [4, 1.4], [5, 1.6]]]
+  ];
+  const quoteCosts = [
+    ['rate','Базовая ставка, ₽/ч',2000], ['comms','Коммуникации и отчёты, %',20],
+    ['software','ПО, ₽',4000], ['travel','Поездки, ₽',2000], ['contractors','Специалисты, ₽',5000],
+    ['risk','Резерв, %',10], ['margin','Целевая маржа, %',25], ['tax','Модельный налог с выручки, %',6]
+  ];
+  const capacityInputs = [
+    ['target','Целевая прибыль, ₽/мес',180000], ['check','Средний чек, ₽/клиент',50000],
+    ['client-hours','Часы на клиента в месяц',24], ['labor','Себестоимость часа, ₽',1000],
+    ['fixed','Постоянные расходы, ₽/мес',30000], ['variable','Прочие расходы, ₽/клиент',3000],
+    ['capacity-tax','Модельный налог с выручки, %',6], ['available','Доступные часы в месяц',160],
+    ['extra-profit','Прибыль разового проекта, ₽',35000], ['extra-hours','Часы на разовый проект',12]
+  ];
+  function node(tag, text = '') {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    return element;
+  }
+  function numericField(id, label, initial, step = '0.01') {
+    const wrapper = node('label', label);
+    const input = node('input');
+    Object.assign(input, { id, type:'number', min:'0', step, value:initial, required:true });
+    wrapper.append(input);
+    return wrapper;
+  }
+  for (const [container, inputs] of [['quote-costs', quoteCosts], ['capacity-inputs', capacityInputs]]) {
+    for (const [id, label, initial] of inputs) byId(container).append(numericField(id, label, initial));
+  }
+  for (const [group, items] of factorGroups) {
+    items.forEach(([name, factor], index) => byId('factors').append(numericField(group + index, group === 'condition' ? 'Состояние учёта · ' + name : name, factor)));
+  }
+  const serviceRows = services.map(([name, min, max, initial, result], i) => {
+    const row = node('div');
+    row.className = 'work';
+    const summary = node('div');
+    summary.append(node('strong', name), node('small', result + ' · ориентир ' + min + '–' + max + ' ч'));
+    row.append(summary, numericField('hours-' + i, 'План, ч', initial));
+    byId('services').append(row);
+    return row;
+  });
+  function metrics(id, rows) {
+    const list = byId(id);
+    list.replaceChildren();
+    for (const [label, data] of rows) {
+      const row = node('div');
+      row.append(node('dt', label), node('dd', data));
+      list.append(row);
+    }
+  }
+  function quote() {
+    const monthly = value('mode') === 'monthly';
+    serviceRows.forEach((row,i) => {
+      row.hidden = monthly !== (i === 6);
+      byId('hours-' + i).disabled = row.hidden;
+    });
+    byId('hours-note').textContent = monthly ? 'Укажите часы основных работ на месяц.' : 'Укажите часы на весь проект. Ноль исключает услугу из предложения.';
+    byId('price-caption').textContent = monthly ? 'Абонемент в месяц' : 'Цена проекта';
+    const scope = services.map(([name,,,,result],i) => ({
+      name, result, hours:num('hours-' + i)
+    })).filter((_,i) => !serviceRows[i].hidden);
+    const rawHours = scope.reduce((sum, work) => sum + work.hours, 0);
+    const hours = rawHours * (1 + percent('comms'));
+    const factors = factorGroups.map(([group]) => num(group + byId(group).selectedIndex));
+    const rate = factors.reduce((product, factor) => product * factor, num('rate'));
+    const direct = num('software') + num('travel') + num('contractors');
+    const cost = (hours * rate + direct) * (1 + percent('risk'));
+    const divisor = 1 - percent('margin') - percent('tax');
+    const price = ceilMoney(cost / divisor);
+    const valid = byId('quote-form').checkValidity() && rawHours > 0 && rate > 0 && divisor > 0 && price > 0 && Number.isFinite(price);
+    byId('price').textContent = valid ? money(price) : '—';
+    byId('quote-message').textContent = valid ? '' : 'Проверьте часы, ставку и расходы. Сумма целевой маржи и налога должна быть меньше 100%.';
+    byId('make-offer').disabled = !valid;
+    const profit = price - cost - price * percent('tax');
+    metrics('quote-metrics', [
+      ['Часы с коммуникациями', valid ? fmt(hours) + ' ч' : '—'],
+      ['Расчётная ставка', valid ? money(rate) + '/ч' : '—'],
+      ['Себестоимость с резервом', valid ? money(cost) : '—'],
+      ['Плановая прибыль', valid ? money(profit) : '—'],
+      ['Рентабельность продаж', valid ? fmt(profit / price * 100) + '%' : '—']
+    ]);
+    return valid ? { monthly, scope:scope.filter(entry => entry.hours > 0), hours, price } : null;
+  }
+  function capacity() {
+    const hours = num('client-hours');
+    const available = num('available');
+    const factor = 1-percent('capacity-tax');
+    const projectHours = num('extra-hours');
+    const valid = byId('capacity-form').checkValidity() && hours > 0 && factor > 0;
+    const variable = hours * num('labor') + num('variable');
+    const margin = num('check') * factor - variable;
+    const fixed = num('fixed');
+    const target = num('target');
+    const limit = Math.floor(available / hours);
+    const needs = margin > 0 ? Math.ceil((target + fixed) / margin) : NaN;
+    const breakeven = margin > 0 ? Math.ceil(fixed / margin) : NaN;
+    const requiredHours = needs * hours;
+    const limitProfit = limit * margin - fixed;
+    const gap = Math.max(0, target - limitProfit);
+    const extraProfit = num('extra-profit');
+    const projects = gap === 0 ? 0 : extraProfit > 0 ? Math.ceil(gap / extraProfit) : NaN;
+    const remainder = Math.max(0, available - limit * hours);
+    const projectLimit = projectHours > 0 ? Math.floor(remainder / projectHours) : NaN;
+    const meter = byId('capacity-meter');
+    meter.dataset.over = valid && requiredHours > available;
+    meter.firstElementChild.style.width = valid && Number.isFinite(requiredHours) ? (available ? Math.min(100, requiredHours / available * 100) : requiredHours > 0 ? 100 : 0) + '%' : '0%';
+    byId('capacity-message').textContent = !valid ? 'Проверьте ввод: часы на клиента должны быть больше нуля, налог — меньше 100%.' : margin <= 0 ? 'Маржа с клиента неположительная. Проверьте чек и затраты.' : needs > limit ? 'Цель выше доступной загрузки. Проверьте нужный чек и вместимость разовых проектов.' : 'Цель укладывается в доступную загрузку.';
+    metrics('capacity-metrics', valid ? [
+      ['Маржа с клиента',money(margin)], ['Клиенты для безубыточности',fmt(breakeven)],
+      ['Клиенты для цели',fmt(needs)], ['Прибыль при целевом числе',money(needs * margin - fixed)],
+      ['Часы для цели / доступно',fmt(requiredHours) + ' / ' + fmt(available)],
+      ['Потолок клиентов',fmt(limit)], ['Чек для цели при потолке',money(limit > 0 ? ceilMoney(((target+fixed)/limit+variable)/factor) : NaN)],
+      ['Прибыль при потолке',money(limitProfit)], ['Свободные часы при потолке',fmt(remainder)],
+      ['Разовые проекты нужны / помещаются',fmt(projects) + ' / ' + fmt(projectLimit)]
+    ] : []);
+  }
+  function dateLabel(date) {
+    return date ? date.split('-').reverse().join('.') : '';
+  }
+  function makeOffer() {
+    const estimate = quote();
+    if (!estimate) return;
+    const client = value('client').trim();
+    if (!client) {
+      byId('quote-message').textContent = 'Укажите название компании клиента для предложения.';
+      byId('client').focus();
+      return;
+    }
+    if (value('valid-date') && value('offer-date') && value('valid-date') < value('offer-date')) {
+      byId('quote-message').textContent = 'Дата окончания действия должна быть не раньше даты предложения.';
+      byId('valid-date').focus();
+      return;
+    }
+    byId('offer-mode').textContent = estimate.monthly ? 'Абонентское сопровождение финансовым директором' : 'Разовый проект по финансовому управлению';
+    byId('offer-meta').textContent = [
+      'Для компании: ' + client,
+      value('provider').trim() && 'Исполнитель: ' + value('provider').trim(),
+      value('contact').trim() && 'Контакты: ' + value('contact').trim(),
+      value('offer-date') && 'Дата: ' + dateLabel(value('offer-date')),
+      value('valid-date') && 'Действует до: ' + dateLabel(value('valid-date'))
+    ].filter(Boolean).join('\n');
+    const body = byId('offer-table').tBodies[0];
+    body.replaceChildren();
+    for (const work of estimate.scope) {
+      const row = body.insertRow();
+      for (const text of [work.name,work.result,fmt(work.hours)]) row.insertCell().textContent = text;
+    }
+    byId('offer-total').textContent = 'Стоимость: ' + money(estimate.price) + (estimate.monthly ? ' в месяц' : ' за проект');
+    byId('offer-hours').textContent = 'Объём с учётом коммуникаций и отчётности: ' + fmt(estimate.hours) + ' ч' + (estimate.monthly ? ' в месяц.' : '.');
+    byId('offer-terms').textContent = value('terms').trim();
+    byId('quote').hidden = true;
+    byId('offer').hidden = false;
+    byId('offer-title').focus();
+  }
+  function setView(id) {
+    for (const name of ['quote','capacity','journal','offer']) byId(name).hidden = name !== id;
+    document.querySelectorAll('[data-view]').forEach(button => button.setAttribute('aria-pressed', button.dataset.view === id));
+  }
+  const journal = byId('journal-rows');
+  function journalData() {
+    return [...journal.rows].map(row => {
+      const [client, service, plan, actual, rate] = [...row.querySelectorAll('input')];
+      const planned = plan.valueAsNumber;
+      const worked = actual.valueAsNumber;
+      const hourly = rate.valueAsNumber;
+      const planValue = plan.validity.valid ? planned : NaN;
+      const actualValue = actual.validity.valid ? worked : NaN;
+      const rateValue = rate.validity.valid ? hourly : NaN;
+      const signal = Number.isFinite(planValue) && Number.isFinite(actualValue) ? actualValue > planValue ? 'Переработка' : 'В пределах плана' : '';
+      return {row, client:client.value, service:service.value, plan:planValue, actual:actualValue, rate:rateValue, plannedTotal:planValue*rateValue, actualTotal:actualValue*rateValue, signal};
+    });
+  }
+  function refreshJournal() {
+    let planned = 0, actual = 0, plannedMoney = 0, actualMoney = 0;
+    for (const entry of journalData()) {
+      planned += Number.isFinite(entry.plan) ? entry.plan : 0;
+      actual += Number.isFinite(entry.actual) ? entry.actual : 0;
+      plannedMoney += Number.isFinite(entry.plannedTotal) ? entry.plannedTotal : 0;
+      actualMoney += Number.isFinite(entry.actualTotal) ? entry.actualTotal : 0;
+      entry.row.cells[5].textContent = money(entry.plannedTotal);
+      entry.row.cells[6].textContent = money(entry.actualTotal);
+      entry.row.cells[7].textContent = entry.signal || '—';
+      entry.row.cells[7].classList.toggle('error',entry.signal === 'Переработка');
+    }
+    byId('journal-summary').textContent = 'План ' + fmt(planned) + ' ч · ' + money(plannedMoney) + ' | Факт ' + fmt(actual) + ' ч · ' + money(actualMoney);
+  }
+  function addEntry(initial = '') {
+    const row = journal.insertRow();
+    for (const [i,label] of ['Клиент','Услуга','План, ч','Факт, ч','Ставка, ₽/ч'].entries()) {
+      const input = node('input');
+      input.setAttribute('aria-label', label);
+      Object.assign(input,{type:i<2?'text':'number',min:'0',step:'0.01',value:i===0?initial:''});
+      row.insertCell().append(input);
+    }
+    for (let i=0;i<3;i++) row.insertCell();
+    const remove = node('button','Удалить');
+    remove.type = 'button';
+    remove.addEventListener('click', () => { row.remove(); refreshJournal(); byId('add-entry').focus(); });
+    row.insertCell().append(remove);
+    refreshJournal();
+    return row.querySelector('input');
+  }
+  function exportJournal() {
+    const escape = cell => {
+      let text = typeof cell === 'number' ? Number.isFinite(cell) ? String(cell).replace('.',',') : '' : cell;
+      if (typeof cell === 'string' && /^[\s]*[=+@-]/.test(text)) text = "'" + text;
+      return '"' + text.replaceAll('"','""') + '"';
+    };
+    const rows = [['Клиент','Услуга','План, ч','Факт, ч','Ставка, ₽/ч','План, ₽','Факт, ₽','Контроль']];
+    for (const entry of journalData()) rows.push([entry.client,entry.service,entry.plan,entry.actual,entry.rate,entry.plannedTotal,entry.actualTotal,entry.signal]);
+    const url = URL.createObjectURL(new Blob(['\uFEFF' + rows.map(row => row.map(escape).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8'}));
+    const link = node('a');
+    link.href = url;
+    link.download = 'Журнал работ CFO.csv';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url),1000);
+  }
+  for (const button of document.querySelectorAll('[data-view]')) button.addEventListener('click', () => setView(button.dataset.view));
+  for (const [id,handler] of [['quote-form',quote],['capacity-form',capacity]]) {
+    byId(id).addEventListener('input',handler);
+    byId(id).addEventListener('submit',event => event.preventDefault());
+  }
+  byId('make-offer').addEventListener('click',makeOffer);
+  byId('close-offer').addEventListener('click',() => { setView('quote'); byId('make-offer').focus(); });
+  byId('print-offer').addEventListener('click',() => window.print());
+  byId('add-entry').addEventListener('click',() => addEntry(value('client').trim()).focus());
+  byId('export-journal').addEventListener('click',exportJournal);
+  journal.addEventListener('input',refreshJournal);
+  const today = new Date();
+  byId('offer-date').value = [today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+  quote();
+  capacity();
+  addEntry();
+</script>
+</body>
+</html>
