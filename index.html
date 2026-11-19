@@ -8,7 +8,7 @@
     :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #162c26; background: #f1f5f0; }
     * { box-sizing: border-box; }
     body { margin: 0; }
-    main { width: min(100% - 32px, 910px); margin: clamp(24px, 7vw, 88px) auto; }
+    main { width: min(100% - 32px, 910px); margin: clamp(24px, 7vw, 88px) auto 0; padding-bottom: calc(132px + env(safe-area-inset-bottom)); }
     h1 { font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.08; letter-spacing: -.045em; margin: 0 0 14px; }
     .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(16px, 4vw, 42px); align-items: center; margin-bottom: 26px; }
     .hero p { margin: 0; color: #40564c; max-width: 34ch; }
@@ -18,28 +18,54 @@
     form { background: white; border: 1px solid #d7e1d8; border-radius: 22px; padding: clamp(14px, 3vw, 28px); }
     .service { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, .85fr) minmax(0, .9fr); gap: 14px; border-bottom: 1px solid #d7e1d8; padding: 18px 0; align-items: start; }
     .service:first-child { padding-top: 0; }
-    .choice { display: flex; align-items: start; gap: 9px; font-weight: 650; cursor: pointer; }
-    input[type="checkbox"] { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: #12624e; }
+    .choice { display: flex; align-items: center; min-height: 48px; padding: 6px 0; gap: 10px; font-weight: 650; cursor: pointer; }
+    input[type="checkbox"] { flex: none; width: 24px; height: 24px; margin: 0; accent-color: #12624e; }
     .source { display: inline-block; margin-left: 29px; font-size: .84rem; color: #285e50; }
     .field label, .subtotal-label { display: block; font-size: .8rem; color: #40564c; margin-bottom: 4px; }
-    input[type="text"] { width: 100%; border: 1px solid #91a89b; border-radius: 8px; padding: 8px; font: inherit; color: inherit; }
+    input[type="text"] { width: 100%; min-height: 44px; border: 1px solid #91a89b; border-radius: 8px; padding: 8px; font: inherit; color: inherit; }
     input:disabled { background: #f4f6f4; color: #52685c; }
     input[aria-invalid="true"] { border-color: #a52130; }
     :focus-visible { outline: 3px solid #1c8068; outline-offset: 3px; }
     .error { display: block; color: #a52130; font-size: .8rem; }
     .subtotal output { font-weight: 650; overflow-wrap: anywhere; }
-    .summary { background: #143e32; color: #fff; border-radius: 14px; padding: 16px 20px; margin: 22px 0 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
-    #total { font-weight: 700; overflow-wrap: anywhere; }
+    .adjustments, .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .adjustments { margin: 20px 0 8px; }
+    .results { margin: 22px 0 15px; }
+    .results h2 { font-size: 1.2rem; margin: 0 0 8px; }
+    .breakdown { margin: 0 0 14px; }
+    .breakdown div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, max-content); gap: 8px; border-bottom: 1px solid #d7e1d8; padding: 8px 0; }
+    .breakdown dt { overflow-wrap: anywhere; }
+    .breakdown dd { margin: 0; text-align: right; font-weight: 650; overflow-wrap: anywhere; max-width: 45vw; }
+    .summary { position: fixed; z-index: 2; inset: auto 0 0; background: #143e32; color: #fff; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 16px #143e3226; }
+    .summary-inner { max-width: 910px; margin: auto; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; }
+    #total { font-size: 1.125rem; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
     .note { color: #40564c; font-size: .88rem; margin: 0 0 16px; }
-    button { background: white; color: #143e32; border: 1px solid #91a89b; border-radius: 8px; padding: 8px 14px; font: inherit; cursor: pointer; }
+    button { min-height: 48px; background: white; color: #143e32; border: 1px solid #91a89b; border-radius: 8px; padding: 8px 12px; font: inherit; cursor: pointer; }
     button:hover { background: #edf5ef; }
+    button:disabled { opacity: .55; cursor: default; }
+    #action-status { margin: 5px 0 0; min-height: 1.5em; color: #40564c; font-size: .88rem; }
+    #manual-copy textarea { width: 100%; min-height: 110px; font: inherit; }
+    #print-total { display: none; }
+    @page { size: A4; margin: 16mm; }
+    @media print {
+      :root, body { background: white; }
+      main { width: auto; margin: 0; padding: 0; }
+      .hero { display: block; margin-bottom: 18px; }
+      .hero h1 { font-size: 25pt; }
+      .hero img, .hero p, .desk-photo, #services, .adjustments, #adjustment-note, .summary, .actions, #action-status, #manual-copy, .note, button, noscript { display: none !important; }
+      form { border: 0; border-radius: 0; padding: 0; }
+      .breakdown div { break-inside: avoid; }
+      #print-total { display: block; font-size: 16pt; font-weight: 700; }
+    }
     @media (max-width: 650px) {
       .hero { grid-template-columns: 1fr; }
       .hero img { aspect-ratio: 16 / 9; }
       .desk-photo { aspect-ratio: 2.5 / 1; }
       .service { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .details, .subtotal { grid-column: 1 / -1; }
-      .subtotal { display: flex; gap: 8px; align-items: baseline; }
+      .subtotal { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: baseline; }
+      .subtotal output { text-align: right; }
+      .actions { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -55,14 +81,29 @@
     <noscript><p>Для расчёта включите JavaScript в браузере.</p></noscript>
     <form id="calculator">
       <div id="services" role="group" aria-label="Финансовые услуги"></div>
-      <div class="summary">
-        <span>Ориентировочная стоимость</span>
-        <output id="total" aria-live="polite">Выберите услуги</output>
+      <div class="adjustments">
+        <div class="field"><label for="discount">Скидка, %</label><input id="discount" type="text" inputmode="decimal" value="0" aria-describedby="discount-error"><small class="error" id="discount-error"></small></div>
+        <div class="field"><label for="markup">Наценка, %</label><input id="markup" type="text" inputmode="decimal" value="0" aria-describedby="markup-error"><small class="error" id="markup-error"></small></div>
       </div>
+      <p class="note" id="adjustment-note">Оба процента считаются от стоимости услуг до корректировок.</p>
+      <section class="results" aria-labelledby="calculation-title">
+        <h2 id="calculation-title">Расшифровка расчёта</h2>
+        <dl class="breakdown" id="breakdown"></dl>
+        <p id="print-total"></p>
+        <div class="actions">
+          <button type="button" id="copy" disabled>Скопировать расчёт</button>
+          <button type="button" id="print" disabled>Распечатать или сохранить PDF</button>
+        </div>
+        <p id="action-status" role="status"></p>
+        <label id="manual-copy" hidden>Текст для копирования<textarea id="copy-text" readonly></textarea></label>
+      </section>
       <p class="note">Начальные тарифы взяты из открытых прайсов. Изменения действуют до закрытия или обновления страницы.</p>
       <button type="reset">Сбросить</button>
     </form>
     <img class="desk-photo" src="financial-planning.webp" alt="" loading="lazy">
+    <div class="summary">
+      <div class="summary-inner"><span>Итого</span><output id="total" aria-live="polite">Выберите услуги</output></div>
+    </div>
   </main>
   <template id="service-template">
     <div class="service" role="group">
@@ -102,16 +143,24 @@
     const services = document.querySelector('#services');
     const template = document.querySelector('#service-template');
     const total = document.querySelector('#total');
+    const breakdown = document.querySelector('#breakdown');
+    const printTotal = document.querySelector('#print-total');
+    const copy = document.querySelector('#copy');
+    const print = document.querySelector('#print');
+    const status = document.querySelector('#action-status');
+    const manual = document.querySelector('#manual-copy');
+    const copyText = document.querySelector('#copy-text');
+    let message = '';
     const integerFormat = new Intl.NumberFormat('ru-RU');
 
     function formatMoney(kopecks) {
       const remainder = kopecks % 100n;
       const decimal = remainder ? ',' + remainder.toString().padStart(2, '0') : '';
-      return 'от ' + integerFormat.format(kopecks / 100n) + decimal + '\u00a0₽';
+      return integerFormat.format(kopecks / 100n) + decimal + '\u00a0₽';
     }
 
     function readPrice(value) {
-      const match = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(value.trim());
+      const match = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(value.trim().replace(/[ \u00a0\u202f]/g, ''));
       if (!match) return null;
       return BigInt(match[1]) * 100n + BigInt((match[2] ?? '').padEnd(2, '0'));
     }
@@ -153,7 +202,7 @@
       const subtotal = row.querySelector('output');
       subtotal.htmlFor.value = [price.input.id, quantity.input.id].join(' ');
       services.append(row);
-      return { choice, price, quantity, subtotal };
+      return { choice, price, quantity, subtotal, name: service.name };
     });
 
     function showError(field, message) {
@@ -162,7 +211,31 @@
       else field.input.removeAttribute('aria-invalid');
     }
 
+    function readAdjustment(id, maximum) {
+      const input = document.getElementById(id);
+      const error = document.getElementById(id + '-error');
+      const rate = input.value.trim() === '' ? 0n : readPrice(input.value);
+      const valid = rate !== null && rate <= maximum;
+      showError({input, error}, valid ? '' : 'Введите процент от 0 до ' + formatPercent(maximum) + '.');
+      return valid ? rate : null;
+    }
+
+    function formatPercent(rate) {
+      return integerFormat.format(rate / 100n) + (rate % 100n ? ',' + String(rate % 100n).padStart(2, '0').replace(/0$/, '') : '') + ' %';
+    }
+
+    function breakdownRow(label, amount) {
+      const row = document.createElement('div');
+      const term = document.createElement('dt');
+      const detail = document.createElement('dd');
+      term.textContent = label;
+      detail.textContent = amount;
+      row.append(term, detail);
+      return row;
+    }
+
     function update() {
+      const items = [];
       let selected = 0;
       let invalid = false;
       let sum = 0n;
@@ -185,14 +258,60 @@
         }
         const subtotal = price * quantity;
         row.subtotal.value = formatMoney(subtotal);
+        items.push([row.name + ' × ' + integerFormat.format(quantity), formatMoney(subtotal)]);
         sum += subtotal;
       }
 
-      if (invalid) total.value = 'Исправьте поля с ошибками';
-      else if (selected === 0) total.value = 'Выберите услуги';
-      else total.value = formatMoney(sum);
+      const discount = readAdjustment('discount', 10000n);
+      const markup = readAdjustment('markup', 1000000n);
+      const ready = !invalid && discount !== null && markup !== null && selected > 0;
+      copy.disabled = print.disabled = !ready;
+      breakdown.replaceChildren();
+      message = '';
+      status.textContent = '';
+      manual.hidden = true;
+      printTotal.textContent = '';
+      if (!ready) {
+        total.value = invalid || discount === null || markup === null ? 'Исправьте поля с ошибками' : 'Выберите услуги';
+        return;
+      }
+
+      const discountAmount = (sum * discount + 5000n) / 10000n;
+      const markupAmount = (sum * markup + 5000n) / 10000n;
+      const grand = formatMoney(sum - discountAmount + markupAmount);
+      const details = [
+        ...items,
+        ['Услуги до корректировок', formatMoney(sum)],
+        ['Скидка · ' + formatPercent(discount), discountAmount ? '−' + formatMoney(discountAmount) : formatMoney(0n)],
+        ['Наценка · ' + formatPercent(markup), markupAmount ? '+' + formatMoney(markupAmount) : formatMoney(0n)]
+      ];
+      breakdown.append(...details.map(([label, amount]) => breakdownRow(label, amount)));
+      total.value = grand;
+      printTotal.textContent = 'Итого — ' + grand;
+      message = ['Расчёт финансовых услуг', ...details.map(([label, amount]) => label + ' — ' + amount), '', printTotal.textContent].join('\n');
     }
 
+    copy.addEventListener('click', async () => {
+      const snapshot = message;
+      try {
+        await navigator.clipboard.writeText(snapshot);
+      } catch {
+        manual.hidden = false;
+        copyText.value = snapshot;
+        copyText.focus();
+        copyText.select();
+        try {
+          if (!document.execCommand('copy')) throw new Error();
+        } catch {
+          status.textContent = 'Текст выделен. Скопируйте его в меню браузера.';
+          return;
+        }
+        manual.hidden = true;
+        copy.focus();
+      }
+      status.textContent = 'Расчёт скопирован.';
+    });
+    print.addEventListener('click', () => window.print());
     calculator.addEventListener('input', update);
     calculator.addEventListener('submit', (event) => event.preventDefault());
     calculator.addEventListener('reset', () => setTimeout(update, 0));
